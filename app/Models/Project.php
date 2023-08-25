@@ -32,4 +32,12 @@ class Project extends Model
     {
         return $query->where('user_id', auth()->user()->id);
     }
+
+    protected $casts = [
+        'name' => 'string',
+        'user_id' => 'int',
+        'owner_id' => 'int',
+        'url' => 'string',
+        'is_active' => 'boolean'
+    ];
 }

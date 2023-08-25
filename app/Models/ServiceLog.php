@@ -21,4 +21,12 @@ class ServiceLog extends Model
     {
         return $query->where('user_id', auth()->user()->id);
     }
+
+    protected $casts = [
+        'project_id' => 'int',
+        'user_id' => 'int',
+        'date' => 'string',
+        'owner_id' => 'int',
+        'notes' => 'string'
+    ];
 }

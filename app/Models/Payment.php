@@ -32,4 +32,14 @@ class Payment extends Model
         return $query->where('user_id', auth()->user()->id);
     }
 
+    protected $casts = [
+        'project_id' => 'int',
+        'user_id' => 'int',
+        'date' => 'string',
+        'amount' => 'int',
+        'owner_id' => 'int',
+        'notes' => 'string',
+        'currency' => 'string'
+    ];
+
 }

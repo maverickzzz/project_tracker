@@ -31,4 +31,11 @@ class ProjectOwner extends Model
     {
         return $query->where('user_id', auth()->user()->id);
     }
+
+    protected $casts = [
+        'name' => 'string',
+        'user_id' => 'int',
+        'country' => 'string',
+        'contact_number' => 'string'
+    ];
 }
