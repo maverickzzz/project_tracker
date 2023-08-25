@@ -36,6 +36,7 @@ class ProjectOwner extends Model
         'name' => 'string',
         'user_id' => 'int',
         'country' => 'string',
-        'contact_number' => 'string'
+        'contact_number' => 'string',
+        'total_payment' => 'int'
     ];
 }
