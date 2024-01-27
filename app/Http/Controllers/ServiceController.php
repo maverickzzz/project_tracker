@@ -19,7 +19,7 @@ class ServiceController extends Controller
     public function index(int $project_id = 0)
     {
         if ($project_id > 0) {
-            $project_payments = Payment::filter()->where('project_id', $project_id)->orderByDesc('date')->get();
+            $project_payments = Payment::filter()->where('project_id', $project_id)->orderByDesc('date');
 
             return Inertia::render(
                 'Dashboard/Services/Index',
@@ -27,10 +27,12 @@ class ServiceController extends Controller
                     'project' => Project::filter()->where('id', $project_id)->with(['owner'])->first(),
                     'data' => Service::filter()->where('project_id', $project_id)->orderBy('type')->get(),
                     // 'payments' => Payment::filter()->where('project_id', $project_id)->where('amount', '>', 0)->orderByDesc('date')->get(),
-                    'payments' => collect($project_payments)->where('amount', '>', 0)->values(),
+//                    'payments' => collect($project_payments)->where('amount', '>', 0)->values(),
+                    'payments' => $project_payments->where('amount', '>', 0)->paginate(10)->withQueryString(),
                     // 'expenses' => Payment::filter()->where('project_id', $project_id)->where('amount', '<', 0)->orderByDesc('date')->get(),
-                    'expenses' => collect($project_payments)->where('amount', '<', 0)->values(),
-                    'logs' => ServiceLog::filter()->where('project_id', $project_id)->orderByDesc('date')->get(),
+//                    'expenses' => collect($project_payments)->where('amount', '<', 0)->values(),
+                    'expenses' => $project_payments->where('amount', '<', 0)->paginate(10)->withQueryString(),
+                    'logs' => ServiceLog::filter()->where('project_id', $project_id)->orderByDesc('date')->paginate(10)->withQueryString(),
                 ]
             );
         }

@@ -81,7 +81,7 @@
                                 <tr>
                                     <th>Gross Income</th>
                                     <td>{{
-                                            payments.reduce((acc, item) => acc +
+                                            payments.data.reduce((acc, item) => acc +
                                                 item.amount, 0).toLocaleString()
                                         }}
                                     </td>
@@ -89,7 +89,7 @@
                                 <tr>
                                     <th>Expense</th>
                                     <td>{{
-                                            (expenses.reduce((acc, item) => acc +
+                                            (expenses.data.reduce((acc, item) => acc +
                                                 item.amount, 0) * -1).toLocaleString()
                                         }}
                                     </td>
@@ -97,7 +97,7 @@
                                 <tr>
                                     <th>Nett Income</th>
                                     <td>{{
-                                            (payments.reduce((acc, item) => acc + item.amount, 0) + expenses.reduce((acc,
+                                            (payments.data.reduce((acc, item) => acc + item.amount, 0) + expenses.data.reduce((acc,
                                                                                                                      item) => acc +
                                                 item.amount, 0)).toLocaleString()
                                         }}
@@ -119,7 +119,7 @@
                             <span>Show all services</span>
                         </label>
                     </div>
-                    <TableView class="w-full" :data="filteredServices" :headers="headers" :actions="actions"/>
+                    <TableView class="w-full" :data="filteredServices" :headers="headers" :actions="actions" :paging="false"/>
                 </div>
             </div>
             <div class="flex space-x-8 mt-8 ">
@@ -174,11 +174,11 @@ import TableView from "@/Shared/TableView.vue"
 
 const props = defineProps({
     project: Object,
-    data: Array,
+    data: Object,
     success: String,
-    payments: Array,
-    expenses: Array,
-    logs: Array,
+    payments: Object,
+    expenses: Object,
+    logs: Object,
 })
 
 const headers = ref([
@@ -201,15 +201,21 @@ const actions = ref([
 ]);
 
 const bolShowAll = ref(false);
-let filteredServices = ref([...props.data.filter(d => d.is_active === 1)]);
+const filteredServices = ref({
+    data: null
+});
+// let filteredServices = ref([...props.data.filter(d => d.is_active === 1)]);
 // let filteredPayments = ref([...props.payments.filter(d => d.amount > 0)].sort((a, b) => b.date.toLocaleString() > a.date.toLocaleString()));
 // let filteredExpenses = ref([...props.payments.filter(d => d.amount < 0)].sort((a, b) => b.date.toLocaleString() > a.date.toLocaleString()));
+
+filteredServices.value.data = ref([...props.data.filter(d => d.is_active)]);
 
 watch(bolShowAll, async (newValue, oldValue) => {
     console.log(newValue, oldValue)
     if (newValue !== oldValue) {
-        filteredServices.value = [...props.data.filter(d => newValue === true || (newValue === false && d.is_active === 1))]
+        filteredServices.value.data = [...props.data.filter(d => newValue === true || (newValue === false && d.is_active))]
     }
+    console.log(filteredServices.value);
 })
 
 const headers2 = ref([

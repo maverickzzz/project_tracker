@@ -16,21 +16,38 @@ class ProjectOwnerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $data = ProjectOwner::filter()->addSelect([
+            'total_projects' => Project::filter()->selectRaw('CAST(COUNT(0) AS INTEGER)')->whereColumn('owner_id', 'project_owners.id')->groupBy('owner_id'),
+            'total_payment' => Payment::filter()->selectRaw('CAST(SUM(amount) AS INTEGER)')
+                ->whereColumn('owner_id', 'project_owners.id')
+                ->where('amount', '>', 0)
+                ->groupBy('owner_id')
+        ])->orderByDesc('total_payment');
+
+        $filter = $request->query();
+        if (isset($filter['search'])) {
+            $data
+                ->where(function ($query) use ($filter) {
+                    $query->where('name', 'like', '%' . $filter['search'] . '%');
+                });
+        }
+
         return Inertia::render(
             'Dashboard/ProjectOwners/List',
             [
-                'data' => ProjectOwner::filter()->addSelect([
-                    'total_projects' => Project::filter()->selectRaw('CAST(COUNT(0) AS INTEGER)')->whereColumn('owner_id', 'project_owners.id')->groupBy('owner_id'),
-                    'total_payment' => Payment::filter()->selectRaw('CAST(SUM(amount) AS INTEGER)')
-                        ->whereColumn('owner_id', 'project_owners.id')
-                        ->where('amount', '>', 0)
-                        ->groupBy('owner_id')
-                ])->orderByDesc('total_payment')->get()->map(function ($item) {
-                    $item->total_payment = $item->total_payment ?? 0;
-                    return $item;
-                })
+                'data' => $data->paginate(10)->withQueryString()
+//                'data' => ProjectOwner::filter()->addSelect([
+//                    'total_projects' => Project::filter()->selectRaw('CAST(COUNT(0) AS INTEGER)')->whereColumn('owner_id', 'project_owners.id')->groupBy('owner_id'),
+//                    'total_payment' => Payment::filter()->selectRaw('CAST(SUM(amount) AS INTEGER)')
+//                        ->whereColumn('owner_id', 'project_owners.id')
+//                        ->where('amount', '>', 0)
+//                        ->groupBy('owner_id')
+//                ])->orderByDesc('total_payment')->get()->map(function ($item) {
+//                    $item->total_payment = $item->total_payment ?? 0;
+//                    return $item;
+//                })
             ]
         );
     }

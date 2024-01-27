@@ -16,13 +16,28 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(int $owner_id = 0)
+    public function index(Request $request, int $owner_id = 0)
     {
+        $data = Project::filter()->with('owner');
+
+        $filter = $request->query();
+        if (isset($filter['search'])) {
+            $data
+                ->where(function ($query) use ($filter) {
+                    $query->where('name', 'like', '%' . $filter['search'] . '%')
+                        ->orWhere('referrer', 'like', '%' . $filter['search'] . '%')
+                        ->orWhere('url', 'like', '%' . $filter['search'] . '%')
+                        ->orWhereHas('owner', function ($query) use ($filter) {
+                            $query->where('name', 'like', '%' . $filter['search'] . '%');
+                        });
+                });
+        }
+
         if ($owner_id > 0) {
             return Inertia::render(
                 'Dashboard/Projects/List',
                 [
-                    'data' => Project::where('owner_id', $owner_id)->filter()->with('owner')->get(),
+                    'data' => $data->where('owner_id', $owner_id)->paginate(10)->withQueryString(),
                     'subtitle' => ProjectOwner::filter()->where('id', $owner_id)->first(),
                     'services' => Service::filter()->where('is_active', 1)->get()
                 ]
@@ -32,7 +47,7 @@ class ProjectController extends Controller
         return Inertia::render(
             'Dashboard/Projects/List',
             [
-                'data' => Project::filter()->with('owner')->get(),
+                'data' => $data->paginate(10)->withQueryString(),
                 'services' => Service::filter()->where('is_active', 1)->get()
             ]
         );

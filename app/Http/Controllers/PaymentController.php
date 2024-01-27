@@ -17,12 +17,14 @@ class PaymentController extends Controller
      */
     public function index(int $project_id = 0)
     {
+        $data = Payment::filter();
+
         if ($project_id > 0) {
             return Inertia::render(
                 'Dashboard/Payments/List',
                 [
-                    'data1' => Payment::filter()->where('project_id', $project_id)->orderByDesc('date')->get(),
-                    'data2' => Payment::filter()->where('project_id', $project_id)->groupBy('project_id')->selectRaw('CAST(SUM(amount) AS INTEGER) as amount, project_id')->orderByDesc('amount')->get(),
+                    'data1' => $data->where('project_id', $project_id)->orderByDesc('date')->paginate(10)->withQueryString(),
+                    'data2' => $data->where('project_id', $project_id)->groupBy('project_id')->selectRaw('CAST(SUM(amount) AS INTEGER) as amount, project_id')->orderByDesc('amount')->paginate(10)->withQueryString(),
                     'subtitle' => Project::filter()->where('id', $project_id)->first()
                 ]
             );
@@ -31,8 +33,8 @@ class PaymentController extends Controller
         return Inertia::render(
             'Dashboard/Payments/List',
             [
-                'data1' => Payment::filter()->orderByDesc('date')->with('project')->get(),
-                'data2' => Payment::filter()->groupBy('project_id')->selectRaw('CAST(SUM(amount) AS INTEGER) as amount, project_id')->orderByDesc('amount')->with('project')->get()
+                'data1' => $data->orderByDesc('date')->with('project')->paginate(10)->withQueryString(),
+                'data2' => $data->groupBy('project_id')->selectRaw('CAST(SUM(amount) AS INTEGER) as amount, project_id')->orderByDesc('amount')->with('project')->paginate(10)->withQueryString()
             ]
         );
     }

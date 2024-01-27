@@ -12,5 +12,5 @@
 <script setup>
 import { usePage } from '@inertiajs/vue3'
 
-const component = usePage().component.split('/');
+const component = usePage().component.split('/').slice(1);
 </script>

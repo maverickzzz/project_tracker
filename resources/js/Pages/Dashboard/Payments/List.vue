@@ -23,13 +23,12 @@ import TableView from "@/Shared/TableView.vue"
 
 
 const props = defineProps({
-    data1: Array,
-    data2: Array,
+    data1: Object,
+    data2: Object,
     subtitle: Object
 })
 
 const headers1 = ref([
-    { label: 'id', column: 'id' },
     { label: 'date', column: 'date' },
     { label: 'project', column: 'project', property: 'name' },
     { label: 'amount', column: 'amount' },

@@ -6,15 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <link rel="shortcut icon" href="{{ asset('favicon.png') }}">
-    <title>Project Tracker</title>
+    <link href="https://fonts.googleapis.com/css?family=Inter:400,600,700" rel="stylesheet">
     @vite('resources/css/app.css')
     @inertiaHead
 </head>
 
 <body x-data="main" class="relative overflow-x-hidden font-nunito text-sm font-normal antialiased">
-    @inertia
+@inertia
 
-    @vite('resources/js/app.js')
+@vite('resources/js/app.js')
 </body>
 
 </html>

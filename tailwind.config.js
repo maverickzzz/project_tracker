@@ -1,9 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     content: [
-      "./resources/**/*.blade.php",
-      "./resources/**/*.js",
-      "./resources/**/*.vue",
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
     ],
     theme: {
         container: {
@@ -58,7 +58,7 @@ module.exports = {
                 },
             },
             fontFamily: {
-                nunito: ["Nunito", "sans-serif"],
+                inter: ["Inter", "sans-serif"],
             },
             spacing: {
                 4.5: "18px",
@@ -72,6 +72,13 @@ module.exports = {
                         "--tw-prose-invert-headings":
                             theme("colors.white.dark"),
                         "--tw-prose-invert-links": theme("colors.white.dark"),
+                        a: {
+                            textDecoration: "none",
+                        },
+                        ul: {
+                            listStyleType: "none",
+                            paddingLeft: "0",
+                        },
                         h1: {
                             fontSize: "40px",
                             marginBottom: "0.5rem",
@@ -110,5 +117,7 @@ module.exports = {
             }),
         },
     },
-    plugins: [],
-  }
+    plugins: [
+        require("@tailwindcss/typography"),
+    ],
+}

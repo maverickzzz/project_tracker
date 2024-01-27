@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\MiddlewareCustom;
 
+use App\Models\UserGroup;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,6 +39,15 @@ class HandleInertiaRequests extends Middleware
     {
         return array_merge(parent::share($request), [
             '_origin' => session('origin'),
+            '_company' => session('company_name'),
+            '_user' => auth()->user(),
+            '_usergroup' => auth()->user() ? session('usergroup_id') : null,
+            '_useraccess' => UserGroup::where('id', session('usergroup_id'))->first()->access ?? null,
+            '_impersonate' => session('impersonate'),
+            '_is_administrator' => auth()->user() && auth()->user()->id === 1,
+            '_message_error' => session('error'),
+            '_message_success' => session('success')
+            //
         ]);
     }
 }

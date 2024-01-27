@@ -1,5 +1,5 @@
 <template>
-    <span :class="`badge mr-2 badge-outline-${type}`">{{ label }}</span>
+<span :class="`badge mr-2 bg-${type}`">{{ label }}</span>
 </template>
 
 <script setup>
